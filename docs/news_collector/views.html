@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>views.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>views.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">render</span>
+<span class="kn">from</span> <span class="nn">links.models</span> <span class="kn">import</span> <span class="n">Link</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <h3><span id="funkcja-reprezentująca-widok-strony-głównej:" href="funkcja-reprezentująca-widok-strony-głównej:"> Funkcja reprezentująca widok strony głównej:  </span></h3>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Domyślnie zostaje załadowany widok z linkami posortowanymi wg daty.
+W przypadku wyboru danego sortowania, za pomocą metody GET pobrana zostaje 
+wartość parametru sort. Jej wartośc zostaje przypisana do pola filter.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">main_page</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">sort_by</span> <span class="o">=</span> <span class="s1">&#39;-published_date&#39;</span>
+    <span class="nb">filter</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sort&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">filter</span> <span class="o">==</span> <span class="s1">&#39;date&#39;</span><span class="p">:</span>
+        <span class="n">sort_by</span> <span class="o">=</span> <span class="s1">&#39;-published_date&#39;</span>
+    <span class="k">elif</span> <span class="nb">filter</span> <span class="o">==</span> <span class="s1">&#39;votes&#39;</span><span class="p">:</span>
+        <span class="n">sort_by</span> <span class="o">=</span> <span class="s1">&#39;-votes&#39;</span>
+    <span class="n">latest_links</span> <span class="o">=</span> <span class="n">Link</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">sort_by</span><span class="p">)[:</span><span class="mi">15</span><span class="p">]</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;latest_links&#39;</span><span class="p">:</span> <span class="n">latest_links</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;news_collector/main_page.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

@@ -1,0 +1,180 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    padding: 8px;
+    margin-left: 80px;
+    margin-right: 80px;
+}
+div.main_bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background: rgb(208, 255, 0);
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+button.login_button, button.log_out_button {
+    padding: 5px;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+div.user_buttons_on_the_bar a {
+    text-decoration: none;
+    margin-left: 8px;
+}
+a.page_title {
+    text-decoration: none;
+}
+a h2 {
+    padding: 15px;
+    font-weight: 900;
+    font-style: italic;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    color: black;
+}
+/* -----------main_page----------- */
+h3 {
+    padding: 15px;
+    font-weight: 700;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+div.sorting_buttons {
+    display: flex;
+    flex-direction: row;
+}
+div.sorting_buttons * {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+ul {
+    list-style-type: none;
+}
+ul.main_list {
+    list-style-type: none;
+    padding-right: 40px;
+    padding-left: 40px;
+}
+ul.main_list li {
+    padding: 2px;
+    border-bottom: 1px solid grey;
+    display: flex;
+    flex-direction: row;
+}
+ul.main_list li:last-child {
+    border-bottom: 0px;
+}
+li div.link_icons {
+    padding: 8px;
+}
+li div.link {
+    padding: 8px;
+}
+div.link_info {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+}
+div.link_info a, p {
+    margin-right: 15px;
+}
+a.link {
+    font-weight: bold;
+    padding: 2px;
+}
+/* ----------comments------------ */
+ul.root_comment {
+    padding: 8px;
+    border-bottom: 1px solid grey;
+    display: flex;
+    flex-direction: row;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+div.comment_page form {
+    padding: 15px;
+}
+div.comment_page h2 {
+    margin-bottom: 0px;
+}
+/* ----------comment_tree------------ */
+div.comment_area {
+    padding: 2px;
+    display: flex;
+    flex-direction: row;
+    border-bottom: 1px solid rgb(148, 147, 147);
+}
+ul.root_comment :first-child:last-child {
+    border-bottom: 0px; 
+}
+ul.inside_com_tree {
+    border-bottom: 1px solid grey;
+}
+div.comment_info {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+}
+div.comment_info a, p {
+    margin-right: 15px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+div.comment_icons {
+    padding: 8px;
+}
+div.comment {
+    padding: 8px;
+}
+/* ------------login------------- */
+div.sign_up, div.sign_in {
+    display: flex;
+    flex-direction: column;
+}
+div.user_data_input label {
+    margin: 3px;
+    display: inline-block;
+    width: 80px;
+}
+div.user_data_input input {
+    margin:  3px;
+}
+.sign_button {
+    margin: 6px;
+}
+/* ----------user_profile---------- */
+div.user_profile {
+    padding: 5px;
+    margin-left: 15px;
+}
+div.user_profile * {
+    border-bottom: 1px solid grey;
+    padding: 5px;
+    padding-bottom: 12px;
+}
+div.user_profile :last-child {
+    border-bottom: 0px;
+}
+div.user_profile div {
+    padding-left: 0px;
+}
+ul.users_links * {
+    border-bottom: 0px;
+}
+/* -----------add_link------------- */
+div.link_input label {
+    margin: 3px;
+    display: inline-block;
+    width: 40px;
+}
+div.link_input input {
+    margin:  3px;
+    width: 250px;
+}
+div.link_input {
+    padding: 3px;
+}
+div.add_link_input {
+    padding: 5px;
+    margin-left: 7px;
+}

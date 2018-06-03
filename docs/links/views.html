@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>views.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>views.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">render</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponseNotFound</span>
+<span class="kn">from</span> <span class="nn">django.utils</span> <span class="kn">import</span> <span class="n">timezone</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.decorators</span> <span class="kn">import</span> <span class="n">login_required</span>
+
+<span class="kn">from</span> <span class="nn">users.models</span> <span class="kn">import</span> <span class="n">UserProfile</span>
+<span class="kn">from</span> <span class="nn">links.models</span> <span class="kn">import</span> <span class="n">Link</span><span class="p">,</span> <span class="n">Comment</span><span class="p">,</span> <span class="n">Like</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>=== Funkcje reprezentujące widoki aplikacji links:  ===</p>
+<p>Funkcja zwiększająca liczbę głosów na dany link. Jeśli w bazie danych znajduje 
+się już taka para użytkownik-link(obiekt klasy Like), to głos nie zostaje 
+oddany.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">vote</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">link_id</span><span class="p">):</span>
+    <span class="n">voted_link</span> <span class="o">=</span> <span class="n">Link</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">link_id</span><span class="p">)</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+    <span class="n">author</span> <span class="o">=</span> <span class="n">UserProfile</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">Like</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">author</span><span class="p">,</span> <span class="n">link</span><span class="o">=</span><span class="n">voted_link</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">Like</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+        <span class="n">Like</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+            <span class="n">user</span><span class="o">=</span><span class="n">author</span><span class="p">,</span>
+            <span class="n">link</span><span class="o">=</span><span class="n">voted_link</span>
+            <span class="p">)</span>
+        <span class="n">voted_link</span><span class="o">.</span><span class="n">votes</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">voted_link</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;main_page&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Funkcja działa analogicznie do funkcji vote, lecz dla komentarzy.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">vote_comment</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">com_id</span><span class="p">):</span>
+    <span class="n">voted_comment</span> <span class="o">=</span> <span class="n">Comment</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">com_id</span><span class="p">)</span>
+    <span class="n">com_link</span> <span class="o">=</span> <span class="n">voted_comment</span><span class="o">.</span><span class="n">link</span>
+    <span class="n">link_id</span> <span class="o">=</span> <span class="n">com_link</span><span class="o">.</span><span class="n">id</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+    <span class="n">author</span> <span class="o">=</span> <span class="n">UserProfile</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">Like</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">author</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="n">voted_comment</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">Like</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+        <span class="n">Like</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+            <span class="n">user</span><span class="o">=</span><span class="n">author</span><span class="p">,</span>
+            <span class="n">comment</span><span class="o">=</span><span class="n">voted_comment</span>
+            <span class="p">)</span>
+        <span class="n">voted_comment</span><span class="o">.</span><span class="n">votes</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">voted_comment</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;comment&#39;</span><span class="p">,</span> <span class="n">link_id</span><span class="o">=</span><span class="n">link_id</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Funkcja generujaca stronę z komentarzami do danego linku. W szablonie comments 
+dodawany jest szablon comments_tree, w którym rekurencyjnie tworzy się drzewo 
+komentarzy.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">comment</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">link_id</span><span class="p">):</span>
+    <span class="n">link</span> <span class="o">=</span> <span class="n">Link</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">link_id</span><span class="p">)</span>
+    <span class="n">comments</span> <span class="o">=</span> <span class="n">Comment</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">link_id</span><span class="o">=</span><span class="n">link</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;link&#39;</span><span class="p">:</span> <span class="n">link</span><span class="p">,</span>
+        <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="n">comments</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;links/comments.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Funkcja służąca do dodawania komentarzy. Jesli wykonywany jest POST, 
+z formularza w szablonie pobierane są dane potzrebne do utworzenia komentarza, 
+a następnie tworzny jest obiekt klasy Comment.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">add_comment</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+        <span class="n">form_data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span>
+        <span class="n">link_id</span> <span class="o">=</span> <span class="n">form_data</span><span class="p">[</span><span class="s1">&#39;link_id&#39;</span><span class="p">]</span>
+        <span class="n">parent_comment_id</span> <span class="o">=</span> <span class="n">form_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;parent_com_id&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">parent_comment</span> <span class="o">=</span> <span class="n">Comment</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="nb">id</span><span class="o">=</span><span class="n">parent_comment_id</span><span class="p">)</span> <span class="k">if</span> <span class="n">parent_comment_id</span> <span class="k">else</span> <span class="bp">None</span>
+        <span class="n">comment_text</span> <span class="o">=</span> <span class="n">form_data</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span>
+        <span class="n">link</span> <span class="o">=</span> <span class="n">Link</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">link_id</span><span class="p">)</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+        <span class="n">author</span> <span class="o">=</span> <span class="n">UserProfile</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">comment</span> <span class="o">=</span> <span class="n">Comment</span><span class="p">(</span>
+            <span class="n">link</span><span class="o">=</span><span class="n">link</span><span class="p">,</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">comment_text</span><span class="p">,</span>
+            <span class="n">published_date</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+            <span class="n">parent_comment</span><span class="o">=</span><span class="n">parent_comment</span><span class="p">,</span>
+            <span class="n">author</span><span class="o">=</span><span class="n">author</span>
+            <span class="p">)</span>
+        <span class="n">comment</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;comment&#39;</span><span class="p">,</span> <span class="n">link_id</span><span class="o">=</span><span class="n">link_id</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">HttpResponseNotFound</span><span class="p">(</span><span class="s1">&#39;&lt;h1&gt;Page not found&lt;/h1&gt;&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Funkcja generująca stronę do odpowiedzi na komentarz.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">reply_comment</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">com_id</span><span class="p">):</span>
+    <span class="n">comment</span> <span class="o">=</span> <span class="n">Comment</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">com_id</span><span class="p">)</span>
+    <span class="n">link</span> <span class="o">=</span> <span class="n">comment</span><span class="o">.</span><span class="n">link</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;link&#39;</span><span class="p">:</span> <span class="n">link</span><span class="p">,</span>
+        <span class="s1">&#39;comment&#39;</span><span class="p">:</span> <span class="n">comment</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;links/reply.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Funkcja do dodawania linków na stronie głównej. Jeśli wykonywany jest POST, 
+tworzony jest obiekt klasy Link.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">add_link</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span><span class="p">:</span>
+        <span class="n">form_data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span>
+        <span class="n">link</span> <span class="o">=</span> <span class="n">form_data</span><span class="p">[</span><span class="s1">&#39;link&#39;</span><span class="p">]</span>
+        <span class="n">link_title</span> <span class="o">=</span> <span class="n">form_data</span><span class="p">[</span><span class="s1">&#39;link_title&#39;</span><span class="p">]</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+        <span class="n">author</span> <span class="o">=</span> <span class="n">UserProfile</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">Link</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+            <span class="n">url</span><span class="o">=</span><span class="n">link</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="n">link_title</span><span class="p">,</span>
+            <span class="n">author</span><span class="o">=</span><span class="n">author</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;main_page&#39;</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

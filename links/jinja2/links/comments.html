@@ -1,0 +1,47 @@
+{% extends 'news_collector/base_with_login_status.html' %}
+
+{% block comments %}
+<div class='comments_list'>
+    <div class='comment_page'>
+        <h3>{{ link.title }}</h3>
+        <form action="{{ url('add_comment') }}" method="post">
+            {{ csrf_input }}
+            <textarea id="written_comment" name="text" cols="50" rows="8"></textarea>
+            <input type="hidden" name="link_id" value="{{ link.id }}">
+            <p><button type="submit">Add comment</button></p>
+        </form>
+    </div>
+
+    <div class='comments_to_link'>
+        {% set root_comments=comments.filter(parent_comment=None) %}
+        {% if root_comments %}
+            {% for comment in root_comments %}
+            <ul class="root_comment">
+                <div>
+                {% with com = comment %}
+                    {% include 'links/comments_tree.html' %}
+                {% endwith %}
+                </div>
+            </ul>
+            {% endfor %}
+        {% else %}
+        <p>No comments yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{#
+<div id='comments_to_link'>
+        {% root_comments = comments.filter(parent_comment=None) %}
+        {% for com in root_comments %}
+        <li>
+            <div>
+                {{ com.text }}
+            </div>
+        </li>
+        {% empty %}
+        <p>No comments yet.</p>
+        {% endfor %}
+    </div>
+#}

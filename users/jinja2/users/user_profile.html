@@ -1,0 +1,19 @@
+{% extends 'news_collector/base_with_login_status.html' %}
+
+{% block user_profile %}
+<div class="user_profile">
+    <h2>{{ request.user.username }}</h2>
+    <p>User's email: {{ request.user.email }}</p>
+    <div>
+        <p>User's posts:</p>
+        <ul class="users_links">
+            {% for link in links %}
+                <li>
+                    <a href="{{ link.url }}">{{ link.title }}</a>
+                    <a href="{{ url('comment', args=[link.id]) }}">comments</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

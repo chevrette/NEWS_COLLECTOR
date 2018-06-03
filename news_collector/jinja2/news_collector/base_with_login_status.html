@@ -1,0 +1,34 @@
+{% extends 'news_collector/base.html' %}
+
+{% block content %}
+    {% if request.user.is_authenticated %}
+        <div class="main_bar">
+            <a class='page_title' href="{{ url('main_page') }}"><h2>NEWS COLLECTOR</h2></a>
+            <div class="user_buttons_on_the_bar">
+                <a class="user_profile_link" href="{{ url('user_profile') }}">{{ request.user.username }}</a>
+                <a href="{{ url('post_link') }}">Post</a>
+                <a href="{{ url('sign_out') }}"><button class="log_out_button">Sign out</button></a>
+            </div>
+        </div>
+    {% else %}
+        <div class="main_bar">
+            <a class='page_title' href="{{ url('main_page') }}"><h2>NEWS COLLECTOR</h2></a>
+            <div class="user_buttons_on_the_bar">
+                <a href="{{ url('login_site') }}"><button class="login_button">Sign in/Sign up</button></a>
+            </div>
+        </div>
+    {% endif %}
+
+    {% block main %}
+    {% endblock %}
+    {% block login %}
+    {% endblock %}
+    {% block comments %}
+    {% endblock %}
+    {% block reply_comment %}
+    {% endblock %}
+    {% block user_profile %}
+    {% endblock %}
+    {% block post_link %}
+    {% endblock %}
+{% endblock %}

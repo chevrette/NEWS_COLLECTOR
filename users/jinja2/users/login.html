@@ -1,0 +1,53 @@
+{% extends 'news_collector/base_with_login_status.html' %}
+
+{% block login %}
+<div class='comment_page'>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <div class='sign_in_sign_up'>
+        <div class='sign_in'>
+            <h3>Sign in</h3>
+            <form action="{{ url('sign_in') }}" method="post">
+                {{ csrf_input }}
+                <div class="user_data_input">
+                    <label for="username-login">Username: </label>
+                    <input type="text" id="username-login" name="username">
+                </div>
+                <div class="user_data_input">
+                    <label for="password-login">Password: </label>
+                    <input type="password" id="password-login" name="password">
+                </div>
+                <button class="sign_button">Submit</button>
+            </form>
+        </div>
+        <div class='sign_up'>
+            <h3>Sign up</h3>
+            <form action="{{ url('sign_up') }}" method="post">
+                {{ csrf_input }}
+                <div class="user_data_input">
+                    <label for="username-sign_up">Username: </label>
+                    <input type="text" id="username-sign_up" name="username">
+                </div>
+                <div class="user_data_input">
+                    <label for="email-sign_up">Email: </label>
+                    <input type="text" id="email-sign_up" name="email">
+                </div>
+                <div class="user_data_input">
+                    <label for="password-sign_up">Password: </label>
+                    <input type="password" id="password-sign_up" name="password">
+                </div>
+                <div class="user_data_input">
+                    <label for="confirm_password-sign_up">Password: </label>
+                    <input type="password" id="confirm_password-sign_up" name="confirm_password">
+                </div>
+                <button class="sign_button">Submit</button>
+            </form>
+        </div>
+    </div>
+<div>
+{% endblock %}

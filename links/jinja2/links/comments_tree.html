@@ -1,0 +1,25 @@
+<li class='com_tree_element'>
+    <div class='comment_area'>
+        <div class='comment_icons'>
+            <a href="{{ url('vote_comment', args=[com.id]) }}">{{ com.votes }}</a>
+        </div>
+        <div class='comment'>
+            {{ com.text }}
+            <div class='comment_info'>
+                <a href="{{ url('reply_comment', args=[com.id]) }}">reply</a>
+                <p>{{ com.author.user.username }}</p>
+                <p>{{ com.published_date.strftime('%x  %-H:%M') }}</p>
+            </div>
+        </div>
+    </div>
+    {% set child_comments = com.comment_set.all() %}
+    {% if child_comments %}
+    <ul class="inside_com_tree">
+        {% for comment in child_comments %}
+            {% with com=comment %}
+                {% include 'links/comments_tree.html' %}
+            {% endwith %}
+        {% endfor %}
+    </ul>
+    {% endif %}
+</li>

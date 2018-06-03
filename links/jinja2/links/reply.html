@@ -1,0 +1,14 @@
+{% extends 'news_collector/base_with_login_status.html' %}
+
+{% block reply_comment %}
+<div>
+    <p>{{ comment.text }}</p>
+    <form action="{{ url('add_comment') }}" method="post">
+        {{ csrf_input }}
+        <textarea id="written_comment" name="text" cols="50" rows="8"></textarea>
+        <input type="hidden" name="link_id" value="{{ link.id }}">
+        <input type="hidden" name="parent_com_id" value="{{ comment.id }}">
+        <button type="submit">reply</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'news_collector/base_with_login_status.html' %}
+
+{% block main %}
+{% if latest_links %}
+<div class="sorting_buttons">
+    <p>Sort by: </p>
+    <a href="{{ url('main_page') }}?sort=date">date</a>
+    <p>|</p>
+    <a href="{{ url('main_page') }}?sort=votes">votes</a>
+</div>
+<ul class="main_list">
+    {% for link in latest_links %}
+    <li>
+        <div class="link_icons">
+            <a href="{{ url('vote', args=[link.id]) }}">{{ link.votes }}</a>
+        </div>
+        <div class="link">
+            <a href="{{ link.url }}" class="link">{{ link.title }}</a>
+            <div class="link_info">
+                {% set comments_number=link.comment_set.count() %}
+                <a href="{{ url('comment', args=[link.id]) }}">{{ comments_number}} comments</a>
+                <p>{{ link.author.user.username }}</p>
+                <p>{{ link.published_date.strftime('%x  %-H:%M') }}</p>
+            </div>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No links added yet.</p>
+{% endif %}
+{% endblock %}
